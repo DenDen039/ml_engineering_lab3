@@ -1,0 +1,13 @@
+{
+    "test_size": 0.2,
+    "val_size": 0.2,
+    "random_state": 42,
+    "lr": 0.001,
+    "n_batches": 4,
+    "batch_indices": [
+        1,
+        2,
+        3,
+        4
+    ]
+}
