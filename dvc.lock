@@ -1,0 +1,144 @@
+schema: '2.0'
+stages:
+  download:
+    cmd: poetry run python -m scripts.download_data
+    deps:
+    - path: pipeline/download.py
+      hash: md5
+      md5: 319f37edcffd9f49e6aab0d633380416
+      size: 2756
+    - path: scripts/download_data.py
+      hash: md5
+      md5: 7c32d4a4136d2a9443251258433e5677
+      size: 895
+    params:
+      params.yaml:
+        download:
+          cifar_dir: data/cifar-10-batches-py
+    outs:
+    - path: data/cifar-10-batches-py
+      hash: md5
+      md5: 2c2c368a819f1df18fd0afa1c052c6c4.dir
+      size: 186214114
+      nfiles: 8
+  prepare:
+    cmd: poetry run python -m scripts.preprocces_data
+    deps:
+    - path: data/cifar-10-batches-py
+      hash: md5
+      md5: 2c2c368a819f1df18fd0afa1c052c6c4.dir
+      size: 186214114
+      nfiles: 8
+    - path: params.yaml
+      hash: md5
+      md5: be63093d19b99ce12c0ae0f66a366409
+      size: 432
+    - path: pipeline/ingestion.py
+      hash: md5
+      md5: 98b653fbf5b3b17ea48ff5dbc3ce94d4
+      size: 3462
+    - path: scripts/preprocces_data.py
+      hash: md5
+      md5: 70d6f1f73ee197c00c483795fb69ce07
+      size: 1469
+    params:
+      params.yaml:
+        download.cifar_dir: data/cifar-10-batches-py
+        prepare:
+          train_split_path: data/processed/train.pkl
+          val_split_path: data/processed/val.pkl
+          test_split_path: data/processed/test.pkl
+          n_batches: 5
+          val_size: 0.2
+          random_state: 42
+    outs:
+    - path: data/processed/test.pkl
+      hash: md5
+      md5: 7f53709046b789cace2afb2090b47776
+      size: 123265823
+    - path: data/processed/train.pkl
+      hash: md5
+      md5: 3eeb6748e259637d4b1cfb9adc8c65bd
+      size: 493380859
+    - path: data/processed/val.pkl
+      hash: md5
+      md5: 45ba5f307deb2805a0433319072c7d95
+      size: 123345799
+  train:
+    cmd: poetry run python -m scripts.train_model
+    deps:
+    - path: data/processed/train.pkl
+      hash: md5
+      md5: 3eeb6748e259637d4b1cfb9adc8c65bd
+      size: 493380859
+    - path: data/processed/val.pkl
+      hash: md5
+      md5: 45ba5f307deb2805a0433319072c7d95
+      size: 123345799
+    - path: pipeline/loader.py
+      hash: md5
+      md5: aad6e4480e274440972024957b8227d0
+      size: 1767
+    - path: pipeline/models.py
+      hash: md5
+      md5: 4c78ca7f6b9f5497a3d5b5f69d6aa1af
+      size: 604
+    - path: pipeline/training.py
+      hash: md5
+      md5: a9eec3ae540179244bd311dddc03847f
+      size: 1884
+    - path: scripts/train_model.py
+      hash: md5
+      md5: a00f31ea65dea4d54e732aed7fe4df1b
+      size: 2008
+    params:
+      params.yaml:
+        prepare.train_split_path: data/processed/train.pkl
+        prepare.val_split_path: data/processed/val.pkl
+        train:
+          model_save_path: models/resnet_cifar10.pth
+          lr: 0.001
+          num_epochs: 5
+          batch_size: 32
+          num_workers: 2
+          device: cuda
+    outs:
+    - path: models/resnet_cifar10.pth
+      hash: md5
+      md5: ebc9e8b3243b9ca8b1cf1e1d75ff319c
+      size: 44777648
+  test:
+    cmd: poetry run python -m scripts.test_model
+    deps:
+    - path: data/processed/test.pkl
+      hash: md5
+      md5: 7f53709046b789cace2afb2090b47776
+      size: 123265823
+    - path: models/resnet_cifar10.pth
+      hash: md5
+      md5: ebc9e8b3243b9ca8b1cf1e1d75ff319c
+      size: 44777648
+    - path: pipeline/loader.py
+      hash: md5
+      md5: aad6e4480e274440972024957b8227d0
+      size: 1767
+    - path: pipeline/models.py
+      hash: md5
+      md5: 4c78ca7f6b9f5497a3d5b5f69d6aa1af
+      size: 604
+    - path: pipeline/testing.py
+      hash: md5
+      md5: 5417aa843ae1f53bda96ca162fa9b2b6
+      size: 1070
+    - path: scripts/test_model.py
+      hash: md5
+      md5: e8b914b3575da748e145accbaf22f221
+      size: 1624
+    params:
+      params.yaml:
+        train.model_save_path: models/resnet_cifar10.pth
+    outs:
+    - path: metrics/test_metrics.json
+      hash: md5
+      md5: 4523f8fe031f62ae7e94b5175079a137
+      size: 75

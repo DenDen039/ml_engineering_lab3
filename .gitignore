@@ -200,5 +200,6 @@ cython_debug/
 
 
 data/*
-!data/raw.dvc
-!data/registry.dvc
+models/*
+!data/*.dvc
+!data/*.dvc

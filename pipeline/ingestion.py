@@ -69,9 +69,9 @@ def process_data(
     """
     n_batches = config.get("n_batches", 5)
     batch_indices = config.get("batch_indices", list(range(1, n_batches + 1)))
-    batch_paths = [f"{data_dir}/cifar-10-batches-py/data_batch_{i}" for i in batch_indices]
+    batch_paths = [f"{data_dir}/data_batch_{i}" for i in batch_indices]
 
-    test_batch = f"{data_dir}/cifar-10-batches-py/test_batch"
+    test_batch = f"{data_dir}/test_batch"
 
     all_data, all_labels = [], []
 
