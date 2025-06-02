@@ -1,7 +1,7 @@
 # DVC
 .dvc/
 .dvcignore
-*.dvc
+!.dvc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
