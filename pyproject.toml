@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "lab1"
+name = "lab3"
 description = "Training pipeline for deep learning model"
 version = "0.01"
 package-mode = false
